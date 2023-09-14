@@ -1,15 +1,27 @@
 package com.akter.videostoryview
 
+import android.annotation.SuppressLint
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.akter.videostoryview.databinding.RowVideoShopFullViewBinding
 
 class VideoStoryAdapter(
-    private val dataList: List<ModelVideoData>,
+    private var dataList: List<ModelVideoData>,
 ) : RecyclerView.Adapter<VideoStoryAdapter.VideoStoryViewHolder>() {
 
-    class VideoStoryViewHolder(val binding: RowVideoShopFullViewBinding) : RecyclerView.ViewHolder(binding.root){
+
+    @SuppressLint("NotifyDataSetChanged")
+    fun updateList(list: MutableList<ModelVideoData>) {
+        val diffCallback = DiffCallback(dataList, list)
+        val diffResult = diffCallback.let { DiffUtil.calculateDiff(it) }
+        dataList = list
+        diffResult.dispatchUpdatesTo(this)
+        notifyDataSetChanged()
+    }
+
+    class VideoStoryViewHolder(binding: RowVideoShopFullViewBinding) : RecyclerView.ViewHolder(binding.root){
         val viewBinding: RowVideoShopFullViewBinding = binding
     }
 
@@ -17,13 +29,7 @@ class VideoStoryAdapter(
         return VideoStoryViewHolder(RowVideoShopFullViewBinding.inflate(LayoutInflater.from(viewGroup.context), viewGroup, false))
     }
 
-    override fun onBindViewHolder(holder: VideoStoryViewHolder, position: Int) {
-        val data = dataList[position]
-        holder.binding.apply {
-
-
-        }
-    }
+    override fun onBindViewHolder(holder: VideoStoryViewHolder, position: Int) {}
 
     override fun getItemCount() = dataList.size
 }

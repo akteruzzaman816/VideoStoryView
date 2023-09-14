@@ -7,16 +7,18 @@ import android.util.Log
 import android.view.MotionEvent
 import androidx.core.net.toUri
 import androidx.media3.common.MediaItem
+import androidx.media3.datasource.DefaultDataSource
 import androidx.media3.exoplayer.ExoPlayer
+import androidx.media3.exoplayer.source.ProgressiveMediaSource
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import java.util.*
 
 class VideoStoryRecyclerView @JvmOverloads constructor(
     context: Context, attrs: AttributeSet? = null
 ) : RecyclerView(context, attrs) {
 
+    private val TAG = "#X_"
     private var scrollingUp = false
     private var dataList = mutableListOf<ModelVideoData>()
 
@@ -47,12 +49,11 @@ class VideoStoryRecyclerView @JvmOverloads constructor(
                 }
             }
         })
-
-        Log.d("#X_", "init................: ")
     }
 
-    @SuppressLint("ClickableViewAccessibility")
-    private fun playVideo() {
+    @SuppressLint("ClickableViewAccessibility", "UnsafeOptInUsageError")
+    private fun  playVideo() {
+        Log.d(TAG, "playVideo................: ")
         val firstVisibleItemPosition = (layoutManager as LinearLayoutManager).findFirstVisibleItemPosition()
         val lastVisibleItemPosition = (layoutManager as LinearLayoutManager).findLastVisibleItemPosition()
 
@@ -86,12 +87,12 @@ class VideoStoryRecyclerView @JvmOverloads constructor(
             player.stop()
 
             val currentViewHolder = findViewHolderForAdapterPosition(currentPlayingPosition)
-            val currentViewBinding = (currentViewHolder as? VideoStoryAdapter.VideoStoryViewHolder)?.viewBinding
+            val currentViewBinding = (currentViewHolder as? StoriesViewHolder)?.viewBinding
             val currentPlayerViewStory = currentViewBinding?.videoMain
             currentPlayerViewStory?.player = null
 
             val viewHolder = findViewHolderForAdapterPosition(targetPosition)
-            val viewBinding = (viewHolder as? VideoStoryAdapter.VideoStoryViewHolder)?.viewBinding
+            val viewBinding = (viewHolder as? StoriesViewHolder)?.viewBinding
             val playerViewStory = viewBinding?.videoMain
             playerViewStory?.player = player
 
@@ -108,16 +109,10 @@ class VideoStoryRecyclerView @JvmOverloads constructor(
                 true
             }
 
-            playerViewStory?.setOnClickListener {
-                Log.d("#X_", "playVideo: ${player.isPlaying}")
-                if (player.isPlaying) player.pause()
-                else player.play()
-            }
-
             val storiesDataModel = dataList[currentPlayingPosition]
 
             val mediaItem: MediaItem = MediaItem.Builder()
-                .setMediaId(storiesDataModel.videoUrl)
+                .setMediaId(storiesDataModel.id.toString())
                 .setUri(storiesDataModel.videoUrl.toUri())
                 .build()
 
@@ -126,7 +121,9 @@ class VideoStoryRecyclerView @JvmOverloads constructor(
             player.setMediaItem(mediaItem)
             player.prepare()
             player.play()
+            Log.d(TAG, "playVideo: $storiesDataModel")
         } else {
+            Log.d(TAG, "playVideo: ")
             player.play()
         }
     }
@@ -134,6 +131,7 @@ class VideoStoryRecyclerView @JvmOverloads constructor(
     fun updateVideoList(list: MutableList<ModelVideoData>) {
         val shouldPlayFirstVideo = dataList.isEmpty() && list.isNotEmpty()
         dataList = list
+//        (adapter as StoriesAdapter).updateList(list)
         (adapter as? ListAdapter<ModelVideoData, ViewHolder>)?.submitList(list)
 
         if (shouldPlayFirstVideo) {

@@ -7,20 +7,20 @@ import com.akter.videostoryview.databinding.ActivityMainBinding
 
 class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
-    private lateinit var storyAdapter: VideoStoryAdapter
+    private lateinit var storyAdapter: StoriesAdapter
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater,null,false)
         setContentView(binding.root)
 
         val dataList = mutableListOf(
-            ModelVideoData("https://beeda-1320138795.cos.ap-singapore.myqcloud.com/stream-video/10_transcode_100030.mp4"),
-            ModelVideoData("https://beeda-1320138795.cos.ap-singapore.myqcloud.com/stream-video/9_transcode_100030.mp4"),
-            ModelVideoData("https://beeda-1320138795.cos.ap-singapore.myqcloud.com/stream-video/1_transcode_100030.mp4"),
-            ModelVideoData("https://beeda-1320138795.cos.ap-singapore.myqcloud.com/stream-video/7_transcode_100030.mp4"),
+            ModelVideoData(1,"http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4"),
+            ModelVideoData(2,"https://beeda-1320138795.cos.ap-singapore.myqcloud.com/stream-video/9_transcode_100030.mp4"),
+            ModelVideoData(3,"https://beeda-1320138795.cos.ap-singapore.myqcloud.com/stream-video/1_transcode_100030.mp4"),
+            ModelVideoData(4,"https://beeda-1320138795.cos.ap-singapore.myqcloud.com/stream-video/7_transcode_100030.mp4"),
         )
 
-        storyAdapter = VideoStoryAdapter(dataList)
+        storyAdapter = StoriesAdapter()
 
         binding.apply {
 
