@@ -14,13 +14,18 @@ class MainActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         val dataList = mutableListOf(
-            ModelVideoData(1,"http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4"),
-            ModelVideoData(2,"https://beeda-1320138795.cos.ap-singapore.myqcloud.com/stream-video/9_transcode_100030.mp4"),
-            ModelVideoData(3,"https://beeda-1320138795.cos.ap-singapore.myqcloud.com/stream-video/1_transcode_100030.mp4"),
-            ModelVideoData(4,"https://beeda-1320138795.cos.ap-singapore.myqcloud.com/stream-video/7_transcode_100030.mp4"),
+            ModelVideoData("https://beeda-1320138795.cos.ap-singapore.myqcloud.com/stream-video/1693733903622_adaptiveDynamicStreaming_1243146.m3u8"),
+            ModelVideoData("https://beeda-1320138795.cos.ap-singapore.myqcloud.com/stream-video/1693733884253_adaptiveDynamicStreaming_1243146.m3u8"),
+            ModelVideoData("https://beeda-1320138795.cos.ap-singapore.myqcloud.com/stream-video/1693735735884_adaptiveDynamicStreaming_1243146.m3u8"),
+            ModelVideoData("https://beeda-1320138795.cos.ap-singapore.myqcloud.com/stream-video/1689664150175_adaptiveDynamicStreaming_1243146.m3u8"),
+            ModelVideoData("https://beeda-1320138795.cos.ap-singapore.myqcloud.com/stream-video/1693733859890_adaptiveDynamicStreaming_1243146.m3u8"),
+            ModelVideoData("https://beeda-1320138795.cos.ap-singapore.myqcloud.com/stream-video/1693733923784_adaptiveDynamicStreaming_1243146.m3u8"),
+            ModelVideoData("https://beeda-1320138795.cos.ap-singapore.myqcloud.com/stream-video/1693980034430_adaptiveDynamicStreaming_1243146.m3u8"),
+            ModelVideoData("https://beeda-1320138795.cos.ap-singapore.myqcloud.com/stream-video/1693980064735_adaptiveDynamicStreaming_1243146.m3u8"),
+            ModelVideoData("https://beeda-1320138795.cos.ap-singapore.myqcloud.com/stream-video/1693980089447_adaptiveDynamicStreaming_1243146.m3u8"),
         )
 
-        storyAdapter = VideoStoryAdapter(dataList)
+        storyAdapter = VideoStoryAdapter()
 
         binding.apply {
 
@@ -44,5 +49,6 @@ class MainActivity : AppCompatActivity() {
         }
         super.onDestroy()
     }
+
 
 }

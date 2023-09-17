@@ -8,9 +8,8 @@ import androidx.recyclerview.widget.RecyclerView
 import com.akter.videostoryview.databinding.RowVideoShopFullViewBinding
 
 class VideoStoryAdapter(
-    private var dataList: List<ModelVideoData>,
 ) : RecyclerView.Adapter<VideoStoryAdapter.VideoStoryViewHolder>() {
-
+    private var dataList = mutableListOf<ModelVideoData>()
 
     @SuppressLint("NotifyDataSetChanged")
     fun updateList(list: MutableList<ModelVideoData>) {

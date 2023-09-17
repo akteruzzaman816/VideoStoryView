@@ -6,21 +6,19 @@ import android.util.AttributeSet
 import android.util.Log
 import android.view.MotionEvent
 import androidx.core.net.toUri
+import androidx.core.view.isVisible
 import androidx.media3.common.MediaItem
+import androidx.media3.common.Player
 import androidx.media3.exoplayer.ExoPlayer
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 
-class VideoStoryRecyclerView @JvmOverloads constructor(
-    context: Context, attrs: AttributeSet? = null
-) : RecyclerView(context, attrs) {
+class VideoStoryRecyclerView(context: Context, attrs: AttributeSet? = null) : RecyclerView(context, attrs) {
 
     private val TAG = "#X_"
     private var scrollingUp = false
     private var dataList = mutableListOf<ModelVideoData>()
-
     private var currentPlayingPosition = -1
-
     private val player: ExoPlayer = ExoPlayer.Builder(context).build()
 
     init {
@@ -48,14 +46,14 @@ class VideoStoryRecyclerView @JvmOverloads constructor(
         })
     }
 
-    @SuppressLint("ClickableViewAccessibility", "UnsafeOptInUsageError")
+    @SuppressLint("ClickableViewAccessibility")
     private fun  playVideo() {
         Log.d(TAG, "playVideo................: ")
         val firstVisibleItemPosition = (layoutManager as LinearLayoutManager).findFirstVisibleItemPosition()
         val lastVisibleItemPosition = (layoutManager as LinearLayoutManager).findLastVisibleItemPosition()
 
-        val lastCompletelyVisibleItemPosition = (layoutManager as LinearLayoutManager).findLastCompletelyVisibleItemPosition()
         val firstCompletelyVisibleItemPosition = (layoutManager as LinearLayoutManager).findFirstCompletelyVisibleItemPosition()
+        val lastCompletelyVisibleItemPosition = (layoutManager as LinearLayoutManager).findLastCompletelyVisibleItemPosition()
 
         val targetPosition = if (!scrollingUp) {
                 lastVisibleItemPosition
@@ -76,11 +74,6 @@ class VideoStoryRecyclerView @JvmOverloads constructor(
                 }
                 firstCompletelyVisibleItemPosition
             }
-
-            if (currentPlayingPosition < 0) {
-                currentPlayingPosition = targetPosition
-            }
-
             player.stop()
 
             val currentViewHolder = findViewHolderForAdapterPosition(currentPlayingPosition)
@@ -93,34 +86,37 @@ class VideoStoryRecyclerView @JvmOverloads constructor(
             val playerViewStory = viewBinding?.videoMain
             playerViewStory?.player = player
 
+            // player views actions
             playerViewStory?.setOnTouchListener { _, event ->
                 when(event.action) {
                     MotionEvent.ACTION_DOWN -> {
                         if (player.isPlaying) player.pause()
                         else player.play()
                     }
-                    MotionEvent.ACTION_UP -> {
-                        //player.play()
-                    }
                 }
                 true
             }
 
+            // setup video urls
             val storiesDataModel = dataList[currentPlayingPosition]
+            val mediaItem: MediaItem = MediaItem.Builder().apply {
+                setUri(storiesDataModel.videoUrl.toUri())
+            }.build()
 
-            val mediaItem: MediaItem = MediaItem.Builder()
-                .setMediaId(storiesDataModel.id.toString())
-                .setUri(storiesDataModel.videoUrl.toUri())
-                .build()
-
-            player.playWhenReady = true
-            player.repeatMode = ExoPlayer.REPEAT_MODE_ONE
-            player.setMediaItem(mediaItem)
-            player.prepare()
-            player.play()
-            Log.d(TAG, "playVideo: $storiesDataModel")
+            // setup player
+            player.apply {
+                addListener(object : Player.Listener{
+                    override fun onIsPlayingChanged(isPlaying: Boolean) {
+                        currentViewBinding?.imgPlay?.isVisible = !isPlaying
+                    }
+                })
+                playWhenReady = true
+                repeatMode = ExoPlayer.REPEAT_MODE_ONE
+                setMediaItem(mediaItem)
+                prepare()
+                play()
+            }
         } else {
-            Log.d(TAG, "playVideo: ")
             player.play()
         }
     }
