@@ -7,11 +7,8 @@ import android.util.Log
 import android.view.MotionEvent
 import androidx.core.net.toUri
 import androidx.media3.common.MediaItem
-import androidx.media3.datasource.DefaultDataSource
 import androidx.media3.exoplayer.ExoPlayer
-import androidx.media3.exoplayer.source.ProgressiveMediaSource
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 
 class VideoStoryRecyclerView @JvmOverloads constructor(
@@ -87,12 +84,12 @@ class VideoStoryRecyclerView @JvmOverloads constructor(
             player.stop()
 
             val currentViewHolder = findViewHolderForAdapterPosition(currentPlayingPosition)
-            val currentViewBinding = (currentViewHolder as? StoriesViewHolder)?.viewBinding
+            val currentViewBinding = (currentViewHolder as? VideoStoryAdapter.VideoStoryViewHolder)?.viewBinding
             val currentPlayerViewStory = currentViewBinding?.videoMain
             currentPlayerViewStory?.player = null
 
             val viewHolder = findViewHolderForAdapterPosition(targetPosition)
-            val viewBinding = (viewHolder as? StoriesViewHolder)?.viewBinding
+            val viewBinding = (viewHolder as? VideoStoryAdapter.VideoStoryViewHolder)?.viewBinding
             val playerViewStory = viewBinding?.videoMain
             playerViewStory?.player = player
 
@@ -131,8 +128,7 @@ class VideoStoryRecyclerView @JvmOverloads constructor(
     fun updateVideoList(list: MutableList<ModelVideoData>) {
         val shouldPlayFirstVideo = dataList.isEmpty() && list.isNotEmpty()
         dataList = list
-//        (adapter as StoriesAdapter).updateList(list)
-        (adapter as? ListAdapter<ModelVideoData, ViewHolder>)?.submitList(list)
+        (adapter as VideoStoryAdapter).updateList(list)
 
         if (shouldPlayFirstVideo) {
             scrollToPosition(0)

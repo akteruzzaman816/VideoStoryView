@@ -7,7 +7,7 @@ import com.akter.videostoryview.databinding.ActivityMainBinding
 
 class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
-    private lateinit var storyAdapter: StoriesAdapter
+    private lateinit var storyAdapter: VideoStoryAdapter
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater,null,false)
@@ -20,9 +20,12 @@ class MainActivity : AppCompatActivity() {
             ModelVideoData(4,"https://beeda-1320138795.cos.ap-singapore.myqcloud.com/stream-video/7_transcode_100030.mp4"),
         )
 
-        storyAdapter = StoriesAdapter()
+        storyAdapter = VideoStoryAdapter(dataList)
 
         binding.apply {
+
+            // back
+            imgBack.setOnClickListener { onBackPressed() }
 
             // player view
             rvPlayerView.apply {
